@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compound Interest Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: url('https://www.wallpaperflare.com/static/151/659/576/money-bills-background-wallpaper.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: #ffffff;
+            text-align: center;
+            padding: 50px;
+        }
+
+        .container {
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 10px;
+            display: inline-block;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        input, select {
+            padding: 10px;
+            margin: 10px;
+            border-radius: 5px;
+            border: none;
+            font-size: 16px;
+            width: 80%;
+        }
+
+        button {
+            padding: 10px 20px;
+            border-radius: 5px;
+            border: none;
+            background-color: #28a745;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        .result {
+            margin-top: 20px;
+            font-size: 24px;
+        }
+
+        footer {
+            margin-top: 50px;
+            font-size: 14px;
+            color: #cccccc;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Compound Interest Calculator</h1>
+        <div>
+            <label>Amount of First Asset (USD):</label>
+            <input type="number" id="depositAmount1" placeholder="Enter amount for Asset 1" required>
+        </div>
+        <div>
+            <label>Annual Interest Rate for Asset 1 (%):</label>
+            <input type="number" id="depositRate1" placeholder="Enter interest rate for Asset 1" required>
+        </div>
+        <div>
+            <label>Amount of Second Asset (USD):</label>
+            <input type="number" id="depositAmount2" placeholder="Enter amount for Asset 2" required>
+        </div>
+        <div>
+            <label>Annual Interest Rate for Asset 2 (%):</label>
+            <input type="number" id="depositRate2" placeholder="Enter interest rate for Asset 2" required>
+        </div>
+        <div>
+            <label>Amount Borrowed (USD):</label>
+            <input type="number" id="borrowAmount" placeholder="Enter amount borrowed" required>
+        </div>
+        <div>
+            <label>Annual Interest Rate for Borrowed Asset (%):</label>
+            <input type="number" id="borrowRate" placeholder="Enter borrowing rate" required>
+        </div>
+        <div>
+            <label>Annual Interest Rate for Lending Borrowed Asset (%):</label>
+            <input type="number" id="lendRate" placeholder="Enter lending rate" required>
+        </div>
+        <div>
+            <label>Select Currency:</label>
+            <select id="currency">
+                <option value="USD" data-rate="1">USD (US Dollar)</option>
+                <option value="EUR" data-rate="0.91">EUR (Euro)</option>
+                <option value="EGP" data-rate="50">EGP (Egyptian Pound)</option>
+            </select>
+        </div>
+        <button onclick="calculateInterest()">Calculate Interest</button>
+        <div class="result">
+            <p id="result"></p>
+        </div>
+    </div>
+    <footer>
+        Made by AFK.sol
+    </footer>
+    <script>
+        function calculateInterest() {
+            const e = Math.exp(1); // Base of the natural logarithm
+            
+            var depositAmount1 = parseFloat(document.getElementById('depositAmount1').value);
+            var depositRate1 = parseFloat(document.getElementById('depositRate1').value) / 100;
+            var depositAmount2 = parseFloat(document.getElementById('depositAmount2').value);
+            var depositRate2 = parseFloat(document.getElementById('depositRate2').value) / 100;
+            var borrowAmount = parseFloat(document.getElementById('borrowAmount').value);
+            var borrowRate = parseFloat(document.getElementById('borrowRate').value) / 100;
+            var lendRate = parseFloat(document.getElementById('lendRate').value) / 100;
+            var selectedCurrency = document.getElementById('currency').value;
+            var exchangeRate = parseFloat(document.querySelector(`#currency option[value="${selectedCurrency}"]`).getAttribute('data-rate'));
+
+            var time = 1; // Assume 1 year for calculations
+
+            var interestEarnedDeposit1 = depositAmount1 * (Math.exp(depositRate1 * time) - 1);
+            var interestEarnedDeposit2 = depositAmount2 * (Math.exp(depositRate2 * time) - 1);
+            var interestCostBorrow = borrowAmount * (Math.exp(borrowRate * time) - 1);
+            var interestEarnedLend = borrowAmount * (Math.exp(lendRate * time) - 1);
+
+            var netInterestEarnedUSD = (interestEarnedDeposit1 + interestEarnedDeposit2 + interestEarnedLend - interestCostBorrow);
+            var netInterestEarned = netInterestEarnedUSD * exchangeRate;
+            
+            document.getElementById('result').innerText = `Net interest earned: ${netInterestEarned.toFixed(2)} ${selectedCurrency}`;
+        }
+    </script>
+</body>
+</html>
